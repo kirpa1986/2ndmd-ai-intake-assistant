@@ -1,0 +1,770 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Request a Consult - 2nd.MD prototype</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1d1f5a;--teal:#0f6b5c;--teal2:#2a9d8f;--link:#1f8a7d;--yellow:#fadf9b;--bg:#e4e5e0;--line:#d6d8d8;--text:#111;--muted:#666}
+*{box-sizing:border-box}
+body{margin:0;font-family:Montserrat,"Helvetica Neue",Arial,sans-serif;color:var(--text);background:#fff;font-size:15px}
+a{color:var(--link);text-decoration:none}
+.side{position:fixed;left:0;top:0;bottom:0;width:152px;background:#fff;z-index:5;display:flex;flex-direction:column}
+.avatar{height:232px;display:flex;align-items:flex-end;justify-content:center;border-bottom:1px solid var(--navy);background:#fff}
+.avatar svg{width:150px;height:145px}
+.nav{flex:1;display:flex;flex-direction:column}
+.nav a{display:flex;align-items:center;justify-content:center;text-align:center;color:var(--navy);font-size:15px;letter-spacing:.3px;text-transform:uppercase;border-bottom:1px solid var(--navy);padding:0 10px;flex:1}
+.nav a.dash{flex:none;height:42px;text-transform:none;font-size:15px;color:#111}
+.nav a.active{background:var(--navy);color:#fff;flex:1.0}
+.nav a:last-child{border-bottom:0}
+.main{margin-left:152px;min-height:100vh;display:flex;flex-direction:column}
+header{height:84px;display:flex;align-items:center;justify-content:center;position:relative}
+header h1{margin:0;font-weight:500;font-size:42px;letter-spacing:.5px;display:flex;align-items:center;gap:22px;padding-left:200px}
+header h1 svg{width:36px;height:36px}
+.hr{position:absolute;right:112px;top:30px;font-size:15px;color:var(--link)}
+.hr .badge{background:#d8344a;color:#fff;border-radius:12px;font-size:12px;font-weight:600;padding:2px 7px;margin-left:4px}
+.hr span.sep{color:#111;margin:0 6px}
+.banner{background:var(--yellow);height:76px;display:flex;align-items:center;justify-content:center;gap:10px;font-size:16px}
+.btn{background:var(--teal);color:#fff;border:0;border-radius:22px;font:inherit;font-size:15px;padding:12px 34px;cursor:pointer}
+.btn:hover{background:#0b574b}
+.help{width:20px;height:20px;border-radius:50%;background:#666;color:#fff;font-size:13px;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
+.content{flex:1;background:var(--bg);padding:28px 104px 90px}
+.card{background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.15);padding:50px 0 50px;min-height:630px}
+.inner{width:920px;max-width:92%;margin:0 auto}
+.inner.narrow{width:600px}
+.lead{margin:0 0 18px;font-size:16px}
+.video{display:flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-bottom:24px;cursor:pointer;background:#fff}
+.thumb{width:236px;height:134px;background:#cde3f2;position:relative;font-family:Georgia,serif;color:#1c2a8c;flex:none}
+.thumb .a{position:absolute;left:34px;top:34px;font-size:17px}
+.thumb .b{position:absolute;left:25px;top:78px;font-size:18px}
+.thumb .play{position:absolute;left:94px;top:46px;width:46px;height:46px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center}
+.thumb .dur{position:absolute;right:8px;bottom:10px;background:#333;color:#fff;font:600 11px Montserrat;padding:3px 6px;border-radius:3px}
+.vtxt{padding:18px 20px}
+.eyebrow{font-size:11px;letter-spacing:1.5px;color:var(--teal);font-weight:600;text-transform:uppercase}
+.vtxt h3{margin:8px 0 8px;font-size:16px;font-weight:600}
+.vtxt p{margin:0 0 8px;font-size:13px;color:var(--muted)}
+.cc{display:inline-block;border:1px solid #999;border-radius:3px;font-size:9px;padding:1px 4px;margin-right:6px;color:#444}
+.vtxt small{font-size:13px;color:var(--muted)}
+.opts{display:grid;grid-template-columns:455px 455px;gap:9px}
+.opt{height:75px;border:1px solid var(--line);border-radius:5px;background:#fff;font:inherit;font-size:16px;cursor:pointer;color:#111}
+.opt:hover{border-color:#9bb}
+.opt.sel{background:#e8f1fb;border:2px solid #2b6fd6}
+.opts.compact{grid-template-columns:1fr 1fr}
+.opts.compact .opt{height:42px;font-size:13px}
+.opts.compact{grid-template-columns:repeat(2,1fr)}
+.form{margin-top:30px;font-size:14px}
+.form h4{margin:0 0 14px;font-size:14px;font-weight:700}
+.steps{display:flex;justify-content:center;margin:0 0 28px}
+.step{width:100px;text-align:center;position:relative;font-size:11px;font-weight:600;line-height:1.3}
+.step i{display:block;width:22px;height:22px;border-radius:50%;border:2px solid var(--teal2);background:#fff;margin:0 auto 10px;position:relative;z-index:1}
+.step.on i{background:var(--teal2)}
+.step.on i:after{content:"";position:absolute;left:6px;top:6px;width:6px;height:6px;background:#fff;border-radius:50%}
+.step:not(:last-child):before{content:"";position:absolute;left:50%;top:10px;width:100%;height:2px;background:var(--teal2)}
+.faq{margin:0 0 14px}
+.watch{font-size:10px;letter-spacing:.3px;color:var(--teal);text-decoration:underline;text-transform:uppercase;display:flex;align-items:center;gap:5px;margin-bottom:22px;cursor:pointer}
+.watch b{width:11px;height:11px;background:var(--teal);border-radius:50%;display:inline-block}
+select,input,textarea{font:inherit;font-size:13px;border:1px solid var(--line);border-radius:3px;padding:9px 10px;background:#fff;color:#111}
+.full{width:100%}
+.note{margin:12px 0 28px}
+.row{display:flex;gap:12px;margin-bottom:16px}
+.row select{width:144px}.row input{flex:1}
+textarea{width:100%;height:112px;resize:vertical}
+.err{color:#c0273b;font-size:12px;margin-top:4px;display:none}
+.center{text-align:center;margin-top:20px}
+.ok{display:flex;gap:12px;background:#e6f2ef;border-radius:6px;padding:12px 14px;margin-bottom:34px}
+.ok .ck{width:20px;height:20px;border-radius:50%;background:var(--teal);color:#fff;font-size:12px;display:flex;align-items:center;justify-content:center;flex:none;margin-top:2px}
+.ok b{font-size:15px;font-weight:600}
+.ok p{margin:4px 0 0;font-size:12.5px;color:#444;line-height:1.5}
+.sched h3{text-align:center;font-size:16px;font-weight:600;margin:0 0 22px}
+.sch{display:flex;height:318px}
+.cal{width:250px;padding-right:20px;border-right:1px solid var(--line);flex:none}
+.calh{display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:12px;margin-bottom:22px}
+.calh span a{margin-left:20px;cursor:pointer;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(7,1fr);row-gap:5px;text-align:center;font-size:11px}
+.grid .dow{font-size:9px;color:#555;margin-bottom:10px}
+.d{width:30px;height:30px;margin:0 auto;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#ccc;font-size:11px}
+.d.av{color:var(--teal);cursor:pointer;font-weight:500;font-size:12px}
+.d.av:hover{background:#e6f2ef}
+.d.sel{background:var(--teal);color:#fff;font-weight:600;font-size:12px}
+.slots{flex:1;padding-left:28px;overflow:hidden;position:relative}
+.slots h5{margin:0;font-size:13px;font-weight:600}
+.slots small{font-size:10px;color:#666;display:block;margin:4px 0 14px}
+.slist{height:240px;overflow-y:auto}
+.slot{display:flex;align-items:center;justify-content:space-between;height:43px;border-bottom:1px solid #eee;font-size:11px}
+.slot span:first-child:before{content:"\25F7";font-size:15px;margin-right:8px;color:#555}
+.slot .btn{padding:7px 0;width:58px;font-size:11px;border-radius:15px}
+.slot .btn.done{background:#e6f2ef;color:var(--teal);cursor:default;width:auto;padding:7px 12px}
+.after{margin-top:6px;font-size:12.5px;line-height:1.55}
+.after h4{font-size:12.5px;margin:20px 0 14px}
+.after ol{list-style:none;padding:0;margin:0}
+.after li{display:flex;gap:12px;margin-bottom:10px}
+.after li i{font-style:normal;width:24px;height:24px;border-radius:50%;background:var(--teal2);color:#fff;font-weight:600;display:flex;align-items:center;justify-content:center;flex:none}
+footer{background:var(--navy);height:56px;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 104px 0 112px;font-size:13px}
+footer a{color:#fff;margin-right:8px}
+.soc{display:flex;gap:30px}
+.soc span{width:16px;height:16px;border-radius:3px;background:#fff;display:inline-block;opacity:.95}
+.chat{position:fixed;right:32px;bottom:106px;background:var(--navy);color:#fff;border-radius:20px;padding:10px 18px;font-size:15px;display:flex;align-items:center;gap:8px;box-shadow:0 2px 6px rgba(0,0,0,.3);z-index:9}
+.hide{display:none!important}
+.narrow-v{width:600px;max-width:100%;margin:0 auto;padding-top:10px}
+.back{display:inline-block;margin-bottom:16px;font-size:13px;cursor:pointer;color:var(--link);font-weight:600}
+.cv-wrap{display:flex;gap:20px;align-items:flex-start}
+.chatbox{flex:1;border:1px solid var(--line);border-radius:10px;display:flex;flex-direction:column;height:560px;overflow:hidden;min-width:0}
+.chead{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--navy);color:#fff}
+.chead .ct{flex:1}.chead b{font-size:14px;font-weight:600;display:block}.chead small{font-size:11px;opacity:.75}
+.bot{width:34px;height:34px;border-radius:50%;background:var(--teal2);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex:none}
+.linkbtn{background:transparent;border:1px solid rgba(255,255,255,.6);color:#fff;border-radius:16px;font:inherit;font-size:12px;padding:6px 12px;cursor:pointer}
+.linkbtn:hover{background:rgba(255,255,255,.12)}
+.msgs{flex:1;overflow-y:auto;padding:18px 16px;background:#f7f8f7;display:flex;flex-direction:column;gap:10px}
+.m{max-width:82%;padding:10px 14px;border-radius:14px;font-size:13.5px;line-height:1.5;animation:in .2s ease}
+.m.b{background:#fff;border:1px solid var(--line);align-self:flex-start;border-bottom-left-radius:4px}
+.m.u{background:var(--teal);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.m.b small{display:block;color:var(--muted);font-size:11.5px;margin-top:4px}
+.typing{display:flex;gap:4px;padding:14px}
+.typing i{width:6px;height:6px;border-radius:50%;background:#999;animation:bl 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes bl{0%,60%,100%{opacity:.25}30%{opacity:1}}
+@keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.chips{display:flex;flex-wrap:wrap;gap:8px;padding:10px 14px 4px;border-top:1px solid var(--line);min-height:12px;background:#fff}
+.chips:empty{display:none}
+.chip{border:1px solid var(--teal);color:var(--teal);background:#fff;border-radius:18px;font:inherit;font-size:12.5px;padding:7px 14px;cursor:pointer}
+.chip:hover{background:#e6f2ef}
+.chip.on{background:var(--teal);color:#fff}
+.chip.done{background:var(--navy);border-color:var(--navy);color:#fff}
+.chip.ghost{border-color:#bbb;color:#555}
+#cform{display:flex;gap:8px;padding:10px 14px 14px;background:#fff}
+#cform input{flex:1;border-radius:20px;padding:10px 16px}
+#cform .send{padding:9px 20px;font-size:13px}
+.summary{width:260px;flex:none;border:1px solid var(--line);border-radius:10px;padding:16px;font-size:12px}
+.summary h4{margin:0 0 10px;font-size:14px}
+.bar{height:6px;background:#e6e8e6;border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--teal2);transition:width .3s}
+#barl{display:block;margin:6px 0 12px;color:var(--muted)}
+.sg{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--teal);font-weight:600;margin:12px 0 4px}
+.sf{display:flex;gap:7px;padding:3px 0;color:#999;line-height:1.35}
+.sf:before{content:"";width:12px;height:12px;border-radius:50%;border:2px solid #ccc;flex:none;margin-top:1px}
+.sf.on{color:#111}.sf.on:before{background:var(--teal2);border-color:var(--teal2)}
+.sf em{display:block;font-style:normal;color:var(--muted);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:190px}
+.sf.na em{font-style:italic}
+/* ---- v3: lighter, contemporary look ---- */
+.done-hd{text-align:center;margin:10px 0 26px}
+.bigck{width:56px;height:56px;border-radius:50%;background:#e3f4ef;color:var(--teal);font-size:26px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.done-hd h2{margin:0 0 6px;font-size:26px;font-weight:600}
+.done-hd p{margin:0;color:var(--muted);font-size:14px}
+.next-q{text-align:center;font-size:15px;font-weight:600;margin:0 0 16px}
+.choices{display:grid;grid-template-columns:1.35fr 1fr;gap:18px;align-items:stretch}
+.ch{border:1px solid #e3e6e4;border-radius:16px;padding:26px;display:flex;flex-direction:column;background:#fff}
+.ch.primary{border:2px solid var(--teal2);background:linear-gradient(180deg,#f3fbf9,#fff 55%);box-shadow:0 8px 28px rgba(15,107,92,.10)}
+.ch h3{margin:0 0 6px;font-size:19px;font-weight:600;line-height:1.3}
+.ch .sub{margin:0 0 18px;font-size:13.5px;color:#555;line-height:1.5}
+.tag{align-self:flex-start;background:var(--teal);color:#fff;font-size:11px;font-weight:600;letter-spacing:.3px;border-radius:12px;padding:4px 11px;margin-bottom:14px}
+.ben{list-style:none;margin:0 0 24px;padding:0;display:flex;flex-direction:column}
+.ben li{display:flex;gap:12px;align-items:flex-start}
+.ben i{font-style:normal;width:32px;height:32px;border-radius:10px;background:#e3f4ef;display:flex;align-items:center;justify-content:center;font-size:15px;flex:none}
+.ben b{display:block;font-size:13.5px;font-weight:600}
+.ben span{display:block;font-size:12.5px;color:#666;line-height:1.45;margin-top:1px}
+.btn.big{padding:15px 24px;font-size:15px;font-weight:600;margin-top:auto;box-shadow:0 4px 14px rgba(15,107,92,.3)}
+.btn.alt{background:#fff;color:var(--teal);border:1.5px solid var(--teal);margin-top:auto;padding:12px 20px}
+.btn.alt:hover{background:#f0f8f6}
+.emerg{text-align:center;font-size:12px;color:#777;margin:22px 0 0}
+.card{border-radius:0}
+.chatbox{border:0;border-radius:20px;box-shadow:0 6px 30px rgba(20,30,50,.09);background:#fff;height:600px}
+.chead{background:#fff;color:#111;border-bottom:1px solid #f0f2f1;padding:16px 20px}
+.chead small{opacity:1;color:#8a8f8d}
+.bot{background:linear-gradient(135deg,#2a9d8f,#0f6b5c);color:#fff;font-size:15px}
+.textlink{background:none;border:0;color:#666;font:inherit;font-size:12px;cursor:pointer;text-decoration:underline}
+.textlink:hover{color:var(--teal)}
+.msgs{background:#fff;padding:22px 22px 10px;gap:12px}
+.m{border-radius:18px;font-size:14px}
+.m.b{background:#f2f5f4;border:0;border-bottom-left-radius:6px;color:#1b1f1e}
+.m.u{background:var(--teal);border-bottom-right-radius:6px}
+.m.b small{color:#6b716f}
+.chips{border-top:0;padding:8px 20px 6px}
+.chip{border:0;background:#e9f5f2;color:#0b5a4d;padding:9px 16px;font-size:13px;font-weight:500;transition:.15s}
+.chip:hover{background:#d6ede8}
+.chip.on{background:var(--teal);color:#fff}
+.chip.done{background:#111;color:#fff}
+.chip.ghost{background:#f2f2f2;color:#555}
+#cform{padding:10px 20px 18px}
+#cform input{background:#f6f7f7;border:1px solid transparent;border-radius:24px;padding:12px 18px}
+#cform input:focus{outline:0;background:#fff;border-color:var(--teal2);box-shadow:0 0 0 3px rgba(42,157,143,.15)}
+#cform .send{border-radius:24px;padding:10px 22px}
+.summary{border:0;background:#f8faf9;border-radius:20px;padding:20px}
+.bar{height:4px}
+.sf:before{border-width:1.5px}
+
+/* ---- v4: ease of use ---- */
+.prog{padding:10px 22px 12px;background:#fff}
+.progtop{display:flex;justify-content:space-between;font-size:12px;color:#6b716f;margin-bottom:6px}
+.progtop #progsec{font-weight:600;color:var(--teal)}
+.progbar{height:4px;background:#eef1f0;border-radius:2px;overflow:hidden}
+.progbar i{display:block;height:100%;width:0;background:var(--teal2);border-radius:2px;transition:width .4s}
+.m{font-size:15px;line-height:1.55}
+.m.sys{align-self:center;background:none;color:#9aa09e;font-size:12px;padding:0}
+.chips{padding:10px 20px 8px;gap:10px}
+.chip{min-height:44px;font-size:14px;padding:10px 18px}
+.chip.on:before{content:"\2713\00a0"}
+.chip:disabled{background:#f0f2f1;color:#9aa09e;cursor:not-allowed}
+.chip.back{background:none;color:#666;padding:10px 8px;margin-left:auto}
+.chip.back:hover{color:var(--teal);background:none}
+.chip:focus-visible,#cform input:focus-visible,.textlink:focus-visible{outline:3px solid #2b6fd6;outline-offset:2px}
+#cform input{font-size:15px;min-height:46px}
+#cform .send{min-height:46px}
+.rvbox{margin-top:10px;background:#fff;border-radius:12px;padding:4px 12px}
+.rv{display:grid;grid-template-columns:120px 1fr auto;gap:10px;align-items:baseline;padding:8px 0;border-bottom:1px solid #f0f2f1;font-size:13px}
+.rv:last-child{border:0}.rv span{color:#6b716f}.rv b{font-weight:500;word-break:break-word}.rv a{color:var(--teal);font-weight:600;font-size:12px}
+@media (max-width:860px){.cv-wrap{flex-direction:column}.summary{width:100%}.choices{grid-template-columns:1fr}}
+
+/* ---- v5: sections, records, ROI ---- */
+.segs{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.ps i{display:block;height:4px;border-radius:2px;background:#eef1f0;transition:background .3s}
+.ps span{display:block;font-size:10.5px;color:#9aa09e;margin-top:5px;line-height:1.25}
+.ps.done i{background:var(--teal2)}.ps.done span{color:#6b716f}
+.ps.on i{background:var(--teal)}.ps.on span{color:var(--teal);font-weight:600}
+.progtop{margin-bottom:8px}
+.drop{margin-top:10px;border:1.5px dashed #b9d9d3;background:#fff;border-radius:12px;padding:16px;text-align:center}
+.drop.over{background:#e9f5f2;border-color:var(--teal2)}
+.drop small{display:block;margin:8px 0 0}
+.drop .btn{padding:9px 20px;font-size:13px}
+.fi{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:7px 4px;border-top:1px solid #f0f2f1;text-align:left;margin-top:6px}
+.fi em{font-style:normal;color:#8a8f8d}
+.roicard{margin-top:12px;background:#fff;border:1px solid #d6ede8;border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.roicard b{display:block;font-size:14px}.roicard span{font-size:12.5px;color:#6b716f}
+.roicard .btn{padding:11px 22px;font-size:14px}
+.roilink{font-size:12px;word-break:break-all;color:var(--teal);text-decoration:underline}
+.modal{position:fixed;inset:0;background:rgba(15,23,30,.5);z-index:50;display:flex;align-items:center;justify-content:center;padding:20px}
+.sheet{background:#fff;border-radius:18px;width:560px;max-width:100%;max-height:92vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.sh{display:flex;justify-content:space-between;align-items:center;padding:18px 24px;border-bottom:1px solid #eee}
+.sh h3{margin:0;font-size:18px;font-weight:600}.sh button{background:none;border:0;font-size:26px;cursor:pointer;color:#666;line-height:1}
+.sbody{padding:18px 24px;overflow-y:auto;font-size:13.5px}
+.sbody h4{margin:18px 0 8px;font-size:12px;letter-spacing:.8px;text-transform:uppercase;color:var(--teal)}
+.sbody .lede{margin:0 0 14px;color:#444;line-height:1.5}
+.sbody label{display:block;font-size:12.5px;font-weight:600;margin-bottom:12px}
+.sbody input:not([type=checkbox]){display:block;width:100%;margin-top:5px;padding:11px 12px;border-radius:8px;font-size:14px;font-weight:400}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.rf{background:#f6f8f7;border-radius:10px;padding:10px 12px;margin-bottom:8px}.rf b{display:block;font-size:13px}.rf span{font-size:12px;color:#666}
+.pp{margin:0;font-weight:500}
+.fine{font-size:12px;color:#666;line-height:1.5;margin:6px 0 12px}
+.ck2{display:flex!important;gap:8px;align-items:flex-start;font-weight:500!important}
+.ck2 input{margin-top:2px}
+.sigin{font-family:"Segoe Script","Brush Script MT",cursive;font-size:20px!important}
+.sf2{display:flex;justify-content:flex-end;gap:10px;padding:14px 24px;border-top:1px solid #eee}
+.sf2 .btn{padding:11px 24px;font-size:14px}
+.btn:disabled{background:#c9d3d0;cursor:not-allowed;box-shadow:none}
+@media (max-width:860px){.ps span{font-size:9px}.g2{grid-template-columns:1fr}}
+.ben li{display:block;padding:14px 0;border-top:1px solid #dcebe7}
+.ben li:last-child{border-bottom:1px solid #dcebe7}
+.ben b{font-size:14px;color:#0b3f36;margin-bottom:3px}
+.ben span{font-size:13px;color:#55605d;line-height:1.5}
+.ben i{display:none}
+.cv-wrap{justify-content:center}.chatbox{max-width:760px}
+/* ---- v6: confirmation screen polish ---- */
+#choiceview{max-width:860px;margin:0 auto;padding-top:6px}
+.done-hd{margin:6px 0 34px}
+.bigck{width:48px;height:48px;font-size:22px;background:var(--teal);color:#fff;margin-bottom:16px}
+.done-hd h2{font-size:28px;font-weight:600;letter-spacing:-.2px;margin-bottom:8px}
+.done-hd p{font-size:14px;color:#6b716f}
+.next-q{font-size:12px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#8a8f8d;margin:0 0 14px;text-align:left}
+.choices{grid-template-columns:1.4fr 1fr;gap:20px}
+.ch{border:1px solid #e4e7e6;border-radius:12px;padding:32px;background:#fff;box-shadow:none}
+.ch.primary{border:1px solid var(--teal);background:#fff;box-shadow:0 2px 14px rgba(15,60,50,.07)}
+.tag{background:none;color:var(--teal);padding:0;border-radius:0;font-size:11px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:12px}
+.ch h3{font-size:20px;font-weight:600;letter-spacing:-.1px;margin-bottom:8px}
+.ch .sub{font-size:14px;color:#5d6563;margin-bottom:22px}
+.ben{gap:16px;margin-bottom:30px}
+.ben li{padding:0 0 0 18px;border:0!important;position:relative}
+.ben li:before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:50%;background:var(--teal)}
+.ben b{font-size:14px;color:#111;font-weight:600;margin-bottom:2px}
+.ben span{font-size:13.5px;color:#5d6563}
+.btn.big{border-radius:8px;padding:14px 24px;box-shadow:none;font-size:15px}
+.btn.alt{border-radius:8px;border-width:1px;padding:13px 20px}
+.ch:not(.primary){background:#fafbfb}
+.emerg{margin-top:28px;color:#8a8f8d}
+.nurse{display:flex;gap:14px;align-items:center;margin-top:12px;background:#fff;border:1px solid #d6ede8;border-radius:12px;padding:14px}
+.nurse .av{width:46px;height:46px;border-radius:50%;background:var(--teal);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:15px;flex:none}
+.nurse .av.lg{width:60px;height:60px;font-size:19px}
+.nurse b{display:block;font-size:14.5px}.nurse span{display:block;font-size:12.5px;color:#6b716f;margin:1px 0 4px}
+.nurse a{font-size:12.5px;font-weight:600;color:var(--teal);text-decoration:underline}
+.nx{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:10px}
+.nx li{display:flex;gap:10px;align-items:flex-start}
+.nx i{font-style:normal;width:22px;height:22px;border-radius:50%;background:#e3f4ef;color:var(--teal);font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex:none;margin-top:1px}
+/* ---- v7: suggested replies tray ---- */
+.chips{background:#f1f6f5;border-top:1px solid #dfe8e6;box-shadow:0 -6px 14px rgba(20,40,40,.05);padding:12px 20px 14px;gap:10px;position:relative}
+.chips:not(:empty)::before{content:"Suggested replies";width:100%;font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:#5d6e6a;margin-bottom:-2px}
+.chip{background:#fff;color:var(--teal);border:1.5px solid var(--teal);border-radius:10px;font-weight:600;min-height:42px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.chip:hover{background:#e6f2ef}
+.chip.on{background:var(--teal);color:#fff}
+.chip.done{background:var(--teal);color:#fff;border-color:var(--teal)}
+.chip.done:hover{background:#0b574b}
+.chip.ghost{background:#fff;color:#4b5553;border:1.5px solid #c9d0ce}
+.chip.ghost:hover{background:#f6f7f7}
+.chip.back{background:none;border:0;box-shadow:none;color:#5d6e6a;font-weight:500}
+.chip:disabled{background:#e9eceb;color:#9aa09e;border-color:#e0e4e3;box-shadow:none}
+#cform{border-top:1px solid #eef1f0}
+/* ---- v8: constant chip height ---- */
+.chips{align-items:flex-start;align-content:flex-start}
+.chip{height:42px;min-height:0;padding:0 18px;line-height:1;white-space:nowrap;flex:none;max-width:100%;overflow:hidden;text-overflow:ellipsis;display:inline-flex;align-items:center;justify-content:center}
+.chip.back{padding:0 8px}
+</style>
+</head>
+<body>
+<aside class="side">
+  <div class="avatar"><svg viewBox="0 0 150 145"><path d="M0 145c0-30 25-40 50-48l-3-12C30 80 28 62 30 48c3-22 18-32 40-30 20 2 33 14 34 32 1 14-3 28-14 36l-3 12c28 7 63 18 63 47z" fill="#9a9a9a"/></svg></div>
+  <nav class="nav">
+    <a class="dash" href="#">Dashboard</a>
+    <a href="#">My Requests</a>
+    <a class="active" href="#">Request a Consult</a>
+    <a href="#">Find a Local Doctor</a>
+    <a href="#">FAQ</a>
+    <a href="#">Account</a>
+  </nav>
+</aside>
+
+<div class="main">
+  <header>
+    <h1><svg viewBox="0 0 36 36"><path d="M13 0h10v13h13v10H23v13H13V23H0V13h13z" fill="#2a9d8f"/></svg>REQUEST A CONSULT</h1>
+    <div class="hr"><a href="#">Notifications</a><span class="badge">27</span><span class="sep">|</span><a href="#">Sign out</a></div>
+  </header>
+
+  <div class="content"><div class="card">
+    <!-- Screens 1 + 2 -->
+    <div class="inner" id="s1">
+      <p class="lead">Please <b>select</b> one of the options below that best applies to you to learn more how 2nd.MD can help.</p>
+      <div id="vid" class="video">
+        <div class="thumb"><span class="a">1st step: <small style="font-size:12px">the diagnosis</small></span><span class="b">2nd step: <b>2nd.MD</b></span>
+          <div class="play"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M3 1l12 7-12 7z" fill="#222"/></svg></div><span class="dur">1:15</span></div>
+        <div class="vtxt"><div class="eyebrow">New to 2nd.MD?</div><h3>See how an expert second opinion works</h3><p>75 seconds on what happens after you submit — and why it costs you nothing.</p><small><span class="cc">CC</span>Captions available</small></div>
+      </div>
+      <div class="opts" id="opts"></div>
+
+      <div class="form hide" id="form">
+        <h4>Great, it looks like you might benefit from a second opinion!</h4>
+        <div class="steps">
+          <div class="step on"><i></i>Submit a<br>request</div>
+          <div class="step"><i></i>Speak with<br>Intake<br>Coordinator</div>
+          <div class="step"><i></i>Record<br>retrieval</div>
+          <div class="step"><i></i>Consult with a<br>specialist</div>
+        </div>
+        <p class="faq">Need more info? Visit our <a href="#">FAQ</a>.</p>
+        <div class="watch"><b></b>Watch how a 2nd.MD consult works (1:15)</div>
+        <h4>Who are you requesting a consult for?</h4>
+        <select class="full"><option>Myself</option><option>My spouse / partner</option><option>My child</option><option>Another family member</option></select>
+        <p class="note">(Dependents with their own login must submit their own requests.)</p>
+        <h4>Preferred contact method *:</h4>
+        <div class="row"><select id="cm"><option>Email</option><option>Phone</option><option>Text</option></select><input id="cv" value="alex.stepantsev+m200@2nd.md"></div>
+        <p class="note" style="margin-top:20px">Our Care Team will reach out Mon-Fri, between 7am-7pm Central Time</p>
+        <h4>Reason for consult request *</h4>
+        <textarea id="reason" placeholder="Enter your reason for consultation"></textarea>
+        <div class="err" id="err">Please enter a reason for your consult request.</div>
+        <div class="center"><button class="btn" id="submit" style="padding:10px 18px;font-size:12px">Submit Consult Request</button></div>
+      </div>
+    </div>
+
+    <!-- Screen 3 -->
+    <div class="inner hide" id="s3" style="padding-top:0">
+      <div id="choiceview">
+        <div class="done-hd"><div class="bigck">&#10003;</div><h2>Your request is submitted</h2><p>Request #1225204. We'll send a confirmation to alex.stepantsev+m200@2nd.md.</p></div>
+        <p class="next-q">What would you like to do next?</p>
+        <div class="choices">
+          <div class="ch primary">
+            <span class="tag">Recommended - fastest way forward</span>
+            <h3>Finish your intake with our AI assistant</h3>
+            <p class="sub">A quick, fully digital chat. No phone call, no waiting.</p>
+            <ul class="ben">
+              <li><div><b>Records start sooner</b><span>We begin requesting your records the moment you finish, not after a call.</span></div></li>
+              <li><div><b>On your schedule</b><span>About 5 minutes, any time, from any device. Skip anything you're unsure about.</span></div></li>
+              <li><div><b>Book your appointment now</b><span>Pre-book your expert consult at the end of the chat.</span></div></li>
+            </ul>
+            <button class="btn big" id="startai">Start with AI assistant</button>
+          </div>
+          <div class="ch">
+            <h3>Schedule a callback</h3>
+            <p class="sub">Prefer to talk it through? An Intake team member will call you Mon-Fri, 7am-7pm Central, at a time you choose.</p>
+            <button class="btn alt" id="cb">Choose a callback time</button>
+          </div>
+        </div>
+        <p class="emerg">If this is a medical emergency, please call 911.</p>
+      </div>
+      <div id="chatview" class="hide">
+        <div class="cv-wrap">
+          <div class="chatbox">
+            <div class="chead"><div class="bot">&#10022;</div><div class="ct"><b>Intake assistant</b><small>About 5 minutes</small></div><button class="textlink" id="human">Prefer a person?</button></div>
+            <div class="prog"><div class="progtop"><span id="progsec"></span><span id="progn"></span></div><div class="segs" id="segs"></div></div>
+            <div class="msgs" id="msgs" role="log" aria-live="polite"></div>
+            <div class="chips" id="chips"></div>
+            <form id="cform"><input id="cin" placeholder="Type your answer..." autocomplete="off"><button class="btn send" type="submit">Send</button></form>
+          </div>
+        </div>
+      </div>
+      <div id="schedview" class="narrow-v hide">
+      <a class="back" id="backchat">&larr; Back to chat assistant</a>
+      <div class="ok"><div class="ck">&#10003;</div><div><b>Your request is submitted</b><p>An Intake Coordinator will call you Mon-Fri, 7am-7pm Central. You can also pick a time that works for you below.</p></div></div>
+      <div class="sched">
+        <h3>Choose date and time for intake appointment</h3>
+        <div class="sch">
+          <div class="cal"><div class="calh"><span id="mon">October 2026</span><span><a id="prev">&lt;</a><a id="next">&gt;</a></span></div><div class="grid" id="grid"></div></div>
+          <div class="slots"><h5 id="avh"></h5><small>All times America/Chicago (CDT)</small><div class="slist" id="slist"></div></div>
+        </div>
+      </div>
+      <div class="after">
+        <p style="margin:14px 0">If you'd like to speak with our team immediately, you can contact us at (866) 841-2575. Just let us know that you've already submitted a request online.</p>
+        <p><b>If this is a medical emergency, please call 911.</b></p>
+        <h4>Here's what to expect next</h4>
+        <ol>
+          <li><i>1</i><span>Your 2nd.MD Intake Coordinator will review your request and reach out to discuss whether a second opinion is right for you.</span></li>
+          <li><i>2</i><span>You'll sign a Release of Information so we can gather all of your relevant medical records.</span></li>
+          <li><i>3</i><span>Your Care Team will retrieve your medical records and match you with the best specialist for your health concern.</span></li>
+          <li><i>4</i><span>We'll schedule your video or phone consult at a time that's convenient for you, even on nights and weekends.</span></li>
+          <li><i>5</i><span>After your expert consultation, you'll get a written summary to share with your medical team.</span></li>
+        </ol>
+      </div>
+      </div>
+    </div>
+  </div></div>
+
+  <footer>
+    <div><a href="#">Contact</a><a href="#">Careers</a><a href="#">Terms</a><a href="#">Privacy Policy</a><a href="#">Sitemap</a><a href="#">Manage Cookies</a></div>
+    <div class="soc"><span></span><span></span><span></span><span></span></div>
+    <div>@ 2026 2nd.MD</div>
+  </footer>
+</div>
+<div class="modal hide" id="roi" role="dialog" aria-modal="true" aria-label="Release of Information"><div class="sheet">
+<div class="sh"><h3>Release of Information</h3><button id="roix" aria-label="Close">&times;</button></div>
+<div class="sbody">
+<p class="lede">Authorization to release your health information to 2nd.MD so we can gather records for your second opinion.</p>
+<div class="g2"><label>Patient name<input value="Alex Stepantsev" readonly></label><label>Date of birth *<input type="date" id="roidob"></label></div>
+<h4>Records will be requested from</h4><div id="roifac"></div>
+<h4>Purpose of disclosure</h4><p class="pp">Second opinion</p>
+<h4>Authorization</h4>
+<p class="fine">I authorize the facilities above to release my health records, including office notes, imaging, lab results and operative reports for the dates listed, to 2nd.MD. This authorization expires one year from the date signed, and I may revoke it in writing at any time. Treatment is not conditioned on signing. (Prototype text - replace with approved legal copy.)</p>
+<label class="ck2"><input type="checkbox" id="roiagree"> I have read and agree to this authorization</label>
+<label>Signature - type your full legal name *<input id="roisig" class="sigin" placeholder="Full name"></label>
+<p class="fine">Date: <span id="roidate"></span></p>
+</div>
+<div class="sf2"><button class="btn alt" id="roicancel" type="button">Cancel</button><button class="btn" id="roisign" type="button" disabled>Sign and submit</button></div>
+</div></div>
+<div class="modal hide" id="bio" role="dialog" aria-modal="true" aria-label="Nurse bio"><div class="sheet" style="width:460px">
+<div class="sh"><h3>Meet your nurse</h3><button id="biox" aria-label="Close">&times;</button></div>
+<div class="sbody"><div class="nurse" style="border:0;padding:0;background:none"><div class="av lg">SM</div><div><b style="font-size:17px">Sarah Mitchell, RN, BSN</b><span>Nurse Care Navigator, 2nd.MD</span></div></div>
+<p class="fine" style="font-size:13.5px;color:#444;margin-top:16px">Sarah has 12 years of clinical experience in orthopedics and internal medicine. She will coordinate your medical records, answer questions about the process, and make sure your specialist has everything needed for your consult.</p>
+<h4>Credentials</h4><p class="pp" style="font-size:13.5px">Registered Nurse, BSN &middot; Board-certified in Medical-Surgical Nursing</p>
+<p class="fine">(Placeholder profile for this prototype.)</p></div>
+<div class="sf2"><button class="btn" id="bioclose" type="button">Close</button></div></div></div>
+<div class="chat"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 3C6.5 3 2 6.5 2 11c0 2.2 1 4.1 2.7 5.6L4 21l4.2-2.2c1.2.4 2.4.6 3.8.6 5.5 0 10-3.5 10-8s-4.500-8.400-10-8.400z" fill="#fff"/></svg>How can we help?</div>
+
+<script>
+const labels=["I have an upcoming surgery or medical procedure","I have a diagnosis that I have questions about","I have a chronic condition that isn't improving","I have questions about treatment options","I need help finding a local doctor","I have another health concern","None of the above"];
+const $=id=>document.getElementById(id);
+const opts=$('opts');
+labels.forEach((t,i)=>{const b=document.createElement('button');b.className='opt';b.textContent=t;b.onclick=()=>pick(b,i);opts.appendChild(b)});
+let selOpt=0;
+function pick(b,i){selOpt=i;
+  [...opts.children].forEach(x=>x.classList.remove('sel'));b.classList.add('sel');
+  $('vid').classList.add('hide');
+  opts.classList.add('compact');
+  $('form').classList.remove('hide');
+  $('form').scrollIntoView({behavior:'smooth',block:'start'});
+}
+$('submit').onclick=()=>{
+  if(!$('reason').value.trim()){$('err').style.display='block';$('reason').focus();return}
+  $('s1').classList.add('hide');$('s3').classList.remove('hide');window.scrollTo({top:0});
+};
+let chatStarted=false;
+function show(id){['choiceview','chatview','schedview'].forEach(v=>$(v).classList.toggle('hide',v!==id));window.scrollTo({top:0})}
+$('startai').onclick=()=>{show('chatview');if(!chatStarted){chatStarted=true;startChat()}};
+$('cb').onclick=$('human').onclick=()=>{show('schedview');renderCal()};
+$('backchat').onclick=()=>show(chatStarted?'chatview':'choiceview');
+// calendar
+let y=2026,m=9,sel=8;const today=8;
+const avail={"2026-9":[8,9,12,13],"2026-10":[2,3,4,5,6]};
+const MN=["January","February","March","April","May","June","July","August","September","October","November","December"];
+const DN=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+function renderCal(){
+  $('mon').textContent=MN[m]+' '+y;
+  const g=$('grid');g.innerHTML='';
+  DN.forEach(d=>g.insertAdjacentHTML('beforeend',`<div class="dow">${d.toUpperCase()}</div>`));
+  const first=new Date(y,m,1).getDay(),n=new Date(y,m+1,0).getDate();
+  const av=avail[y+'-'+m]||[];
+  for(let i=0;i<first;i++)g.insertAdjacentHTML('beforeend','<div></div>');
+  for(let d=1;d<=n;d++){
+    const el=document.createElement('div');el.className='d';el.textContent=d;
+    if(av.includes(d)){el.classList.add('av');el.onclick=()=>{sel=d;renderCal()}}
+    if(d===sel&&av.includes(d))el.classList.add('sel');
+    g.appendChild(el);
+  }
+  renderSlots();
+}
+function renderSlots(){
+  const av=avail[y+'-'+m]||[];
+  if(!av.includes(sel))sel=av[0]||0;
+  $('avh').textContent=sel?`Availability – ${MN[m].slice(0,3)}. ${sel}, ${y}`:'No availability this month';
+  const l=$('slist');l.innerHTML='';if(!sel)return;
+  const start=(y===2026&&m===9&&sel===8)?17*60+15:9*60;
+  const end=start+60*8;
+  for(let t=start;t<(sel===8?17*60+15+60:end);t+=sel===8?5:15){
+    let h=Math.floor(t/60),mm=t%60,ap=h>=12?'pm':'am',hh=h%12||12;
+    const s=`${hh}:${String(mm).padStart(2,'0')} ${ap}`;
+    const r=document.createElement('div');r.className='slot';
+    r.innerHTML=`<span>${s}</span><button class="btn">Book</button>`;
+    r.querySelector('button').onclick=e=>{
+      document.querySelectorAll('.slot .btn.done').forEach(x=>{x.className='btn';x.textContent='Book'});
+      e.target.className='btn done';e.target.textContent='Booked ✓';
+    };
+    l.appendChild(r);
+  }
+}
+/* ---------- AI intake chat (scripted simulation) ---------- */
+const NA='N/A';
+const subjSug=["Second opinion on upcoming surgery","Questions about my diagnosis","Chronic condition not improving","Treatment options question","Help finding a local doctor","Health concern","General health question"];
+const STEPS=[
+ {k:'subject',g:'Consult goal',l:'Subject',q:()=>`Let's start with a short title for your request. Would this work?`,chips:()=>[{t:subjSug[selOpt]},{t:'Something else',ask:'Sure - type a short title (a few words).'}]},
+ {k:'intro',g:'Consult goal',l:'Request introduction',q:()=>`Here is what you wrote in your request:<small>"${esc(reason())}"</small>Should I use this as your introduction for the specialist?`,chips:()=>[{t:'Yes, use that'},{t:"I'll rewrite it",ask:'Go ahead and type it below - a few sentences is plenty.'}],special:'intro'},
+ {k:'goal',g:'Consult goal',l:'Consult goal',q:()=>`What do you hope to get out of the consult? Pick all that apply.`,multi:1,chips:()=>['Confirm my diagnosis','Compare treatment options','Decide whether to have surgery','Understand my prognosis','Find the right specialist'].map(t=>({t}))},
+ {k:'dx',g:'Diagnosis',l:'Diagnosis',q:()=>`What diagnosis have you been given, if any?`,chips:()=>[{t:'No diagnosis yet',na:1}],hint:1},
+ {k:'studies',g:'Diagnosis',l:'Diagnostic studies',q:()=>`Which tests or imaging have you had for this? Pick all that apply, or type details like dates and where.`,multi:1,chips:()=>['MRI','CT scan','X-ray','Ultrasound','Blood work','Biopsy'].map(t=>({t})).concat([{t:'None so far',na:1}])},
+ {k:'pmh',g:'History',l:'Past medical history',q:()=>`Now a bit of background. Any past or ongoing medical conditions?`,multi:1,chips:()=>['High blood pressure','Diabetes','Heart disease','Asthma / COPD','Cancer','Mental health condition'].map(t=>({t})).concat([{t:'None',na:1}])},
+ {k:'surg',g:'History',l:'Surgical history',q:()=>`Have you had any surgeries before? Type them in (for example "knee arthroscopy, 2019").`,chips:()=>[{t:'No past surgeries',na:1}]},
+ {k:'fam',g:'History',l:'Family history',q:()=>`Anything that runs in your family?`,multi:1,chips:()=>['Heart disease','Cancer','Diabetes','Stroke','Autoimmune condition'].map(t=>({t})).concat([{t:'None known',na:1}])},
+ {k:'past',g:'History',l:'Past treatments',q:()=>`What treatments have you already tried for this?`,multi:1,chips:()=>['Medication','Physical therapy','Injections','Surgery','Lifestyle changes'].map(t=>({t})).concat([{t:'Nothing yet',na:1}])},
+ {k:'curr',g:'Current treatment plan',l:'Current treatments',q:()=>`And what are you doing for it right now? Include medication names if you know them.`,multi:1,chips:()=>['Taking medication','Physical therapy','Monitoring only'].map(t=>({t})).concat([{t:'No current treatment',na:1}])},
+ {k:'plan',g:'Current treatment plan',l:"Local provider's plan",q:()=>`Last one: what has your local doctor recommended?`,multi:1,chips:()=>['Surgery','Medication','Further testing','Wait and monitor'].map(t=>({t})).concat([{t:'No plan yet',na:1}])}
+];
+const data={};let si=-1,sel2=[],busy=false,finished=false,asking=false;
+const first='Alex';
+function esc(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
+function reason(){const r=$('reason').value.trim();return r.length>160?r.slice(0,157)+'...':r}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+function add(cls,html){const d=document.createElement('div');d.className='m '+cls;d.innerHTML=html;$('msgs').appendChild(d);$('msgs').scrollTop=1e5;return d}
+async function bot(html,ms=450){
+  const t=add('b typing','<i></i><i></i><i></i>');await sleep(ms);t.remove();add('b',html)
+}
+function setChips(list){
+  const c=$('chips');c.innerHTML='';
+  list.forEach(o=>{const b=document.createElement('button');b.type='button';b.className='chip'+(o.cls?' '+o.cls:'');b.textContent=o.t;b.onclick=()=>o.fn(b,o);c.appendChild(b)});
+}
+function renderSummary(){
+  if(!$('sumlist'))return;
+  let h='',g='',n=0;
+  STEPS.forEach(s=>{
+    if(s.g!==g){g=s.g;h+=`<div class="sg">${g}</div>`}
+    const v=data[s.k];if(v!==undefined)n++;
+    h+=`<div class="sf ${v!==undefined?'on':''} ${v===NA?'na':''}"><div>${s.l}${v!==undefined?`<em title="${esc(v)}">${esc(v)}</em>`:''}</div></div>`;
+  });
+  if(facilities.length){
+    h+=`<div class="sg">Facilities (${facilities.length})</div>`;
+    facilities.forEach((f,i)=>{
+      const det=[f.addr,f.dates,f.recs].filter(x=>x&&x!==NA).join(' | ');
+      h+=`<div class="sf ${f.name?'on':''}"><div>${f.name?esc(f.name):'Facility '+(i+1)}${det?`<em title="${esc(det)}">${esc(det)}</em>`:''}</div></div>`;
+    });
+  }
+  h+=`<div class="sg">Medical records</div><div class="sf ${data.rec?'on':''}"><div>Records on hand${data.rec?`<em>${esc(data.rec)}</em>`:''}</div></div><div class="sf ${data.roi==='Signed'?'on':''}"><div>Release of information${data.roi?`<em>${esc(data.roi)}</em>`:''}</div></div>`;
+  $('sumlist').innerHTML=h;$('bari').style.width=(n/STEPS.length*100)+'%';$('barl').textContent=n+' of '+STEPS.length+' answered';
+}
+async function startChat(){
+  renderSummary();setChips([]);
+  await bot(`Hi ${first}, I'm the 2nd.MD intake assistant. I'll ask a few quick questions, one at a time, so your Care Team can start on your records right away.`,500);
+  await bot(`Tap an answer or type your own. "None" or "Not sure" is always fine.`,700);
+  next();
+}
+function user(t){add('u',esc(t));setChips([])}
+const dr=y=>{const d=new Date(2026,9,8),f=new Date(2026-y,9,8),p=x=>String(x.getMonth()+1).padStart(2,'0')+'/'+String(x.getDate()).padStart(2,'0')+'/'+x.getFullYear();return p(f)+' - '+p(d)};
+const FSTEPS=[
+ {k:'name',l:'Name',q:()=>`What's the name of the doctor, clinic or hospital? Type it in.`,chips:()=>[]},
+ {k:'addr',l:'Address',q:()=>`What's its address, or at least the city and state?`,chips:()=>[{t:"I'm not sure",na:1}]},
+ {k:'proc',l:'Procedures and labs',q:()=>`What procedures, tests or labs were done there? One per line is ideal - in chat, separate them with commas.`,multi:1,chips:()=>['Office visit','MRI / CT / X-ray','Blood work','Surgery','Physical therapy'].map(t=>({t})).concat([{t:"I'm not sure",na:1}])},
+ {k:'phone',l:'Phone',q:()=>`Do you have the facility's phone number? It speeds up record requests.`,chips:()=>[{t:"I don't have it",na:1}]},
+ {k:'fax',l:'Fax',q:()=>`And their fax number, if you have it?`,chips:()=>[{t:"I don't have it",na:1}]},
+ {k:'dates',l:'Service dates',q:()=>`When were you seen there? Pick a range or type dates (mm/dd/yyyy to mm/dd/yyyy).`,chips:()=>[{t:'Past 12 months',v:dr(1)},{t:'Past 2 years',v:dr(2)},{t:'Past 5 years',v:dr(5)},{t:"I'm not sure",na:1}]},
+ {k:'recs',l:'Record types',q:()=>`Which records should we request from them? Pick all that apply.`,multi:1,chips:()=>['Office visit notes','Imaging reports','Lab results','Operative reports','Discharge summary','Billing records'].map(t=>({t})).concat([{t:'Everything available',na:0,all:1}])}
+];
+let mode='main',fi=-1,cur=null,curStep=null,facilities=[],editing=false,reviewing=false;
+const PH={subject:'Type a short title...',intro:'Type your introduction...',goal:'Or type your own goal...',dx:'Type your diagnosis...',studies:'Add details, e.g. MRI of left knee, March 2026',pmh:'Or type other conditions...',surg:'e.g. knee arthroscopy, 2019',fam:'Or type other conditions...',past:'Or describe what you tried...',curr:'e.g. ibuprofen 400mg twice daily',plan:'Or type what your doctor said...',name:'e.g. Mercy General Hospital',addr:'City, state or full address',proc:'Or type procedures, separated by commas',phone:'e.g. 201-555-0123',fax:'e.g. 201-555-0123',dates:'mm/dd/yyyy to mm/dd/yyyy',recs:'Or type other record types'};
+const SECS=['Consult goal','Diagnosis','History','Current treatment plan','Facilities visited','Medical records'];
+$('segs').innerHTML=SECS.map(n=>`<div class="ps"><i></i><span>${n}</span></div>`).join('');
+const secIdx=s=>SECS.indexOf(s.g);
+function prog(idx,txt){
+  $('progsec').textContent=SECS[Math.min(idx,5)];$('progn').textContent=txt;
+  [...$('segs').children].forEach((e,i)=>e.className='ps'+(i<idx?' done':i===idx?' on':''));
+}
+const isMain=s=>STEPS.includes(s);
+const canBack=()=>!editing&&(isMain(curStep)?si>0:fi>0);
+async function startFac(){
+  mode='fac';prog(4,'Almost there');
+  await bot(`Last section: the doctors and facilities you've seen for this. We'll request your records from them for the purpose of a <b>second opinion</b> (you'll sign the release at the end).`,600);
+  asking=false;
+  setChips([{t:'Add a facility',cls:'done',fn:()=>{user('Add a facility');newFac()}},{t:"I haven't seen anyone",cls:'ghost',fn:()=>{user("I haven't seen anyone");records()}}]);
+}
+function newFac(){cur={};facilities.push(cur);fi=-1;renderSummary();next()}
+async function facDone(){
+  asking=false;
+  await bot(`Saved <b>${esc(cur.name)}</b>. Have you been seen at any other doctor or facility for this?`,450);
+  setChips([{t:'Add another facility',fn:()=>{user('Add another facility');newFac()}},{t:"No, that's all",cls:'done',fn:()=>{user("No, that's all");records()}}]);
+}
+function next(){
+  if(mode==='main'){si++;if(si>=STEPS.length)return startFac();return present(STEPS[si])}
+  fi++;if(fi>=FSTEPS.length)return facDone();return present(FSTEPS[fi]);
+}
+async function present(s){
+  curStep=s;sel2=[];asking=true;setChips([]);
+  if(editing)prog(isMain(s)?secIdx(s):4,'Editing');
+  else if(isMain(s))prog(secIdx(s),`Question ${si+1} of ${STEPS.length}`);
+  else prog(4,`Facility ${facilities.length}, step ${fi+1} of ${FSTEPS.length}`);
+  $('cin').placeholder=PH[s.k]||'Type your answer...';
+  await bot(s.q()+(s.multi?'<small>Select all that apply, then tap Continue.</small>':''),450);
+  const list=s.chips().map(o=>({t:o.t,cls:o.na?'ghost':'',fn:(b)=>{
+    if(o.na){answer(o.t,true);return}
+    if(o.all){answer('Everything available');return}
+    if(o.v){answer(o.v);return}
+    if(o.ask){user(o.t);$('cin').focus();bot(o.ask,300);return}
+    if(s.special==='intro'){answer(reason());return}
+    if(s.multi){b.classList.toggle('on');const i=sel2.indexOf(o.t);i<0?sel2.push(o.t):sel2.splice(i,1);updDone();return}
+    answer(o.t);
+  }}));
+  if(s.multi)list.push({t:'Select one or more',cls:'done',fn:()=>{if(sel2.length)answer(sel2.join(', '))}});
+  if(editing)list.push({t:'Cancel',cls:'back',fn:()=>{editing=false;asking=false;review()}});
+  else if(canBack())list.push({t:'← Back',cls:'back',fn:goBack});
+  setChips(list);updDone();
+  if(window.innerWidth>800&&!s.chips().length)$('cin').focus();
+}
+function updDone(){
+  const d=document.querySelector('.chip.done');if(!d||!curStep||!curStep.multi)return;
+  d.textContent=sel2.length?`Continue (${sel2.length})`:'Select one or more';d.disabled=!sel2.length;
+}
+function goBack(){
+  if(!asking||!canBack())return;asking=false;setChips([]);
+  if(isMain(curStep)){delete data[STEPS[si-1].k];si-=2}
+  else{delete cur[FSTEPS[fi-1].k];fi-=2}
+  renderSummary();add('sys','Going back');next();
+}
+function answer(text,isNA){
+  if(!asking)return;asking=false;
+  const s=curStep;
+  user(text);(isMain(s)?data:cur)[s.k]=isNA?NA:text;renderSummary();
+  if(editing){editing=false;return review()}
+  next();
+}
+$('cform').onsubmit=e=>{
+  e.preventDefault();const v=$('cin').value.trim();if(!v||!asking)return;$('cin').value='';
+  if(curStep.multi&&sel2.length)answer(sel2.concat(v).join(', '));else answer(v);
+};
+
+$('roidate').textContent=new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+$('biox').onclick=$('bioclose').onclick=()=>$('bio').classList.add('hide');
+const ROI_URL='https://app.2nd.md/sign/roi/1225204';
+async function records(){
+  mode='rec';asking=false;prog(5,'Last step');setChips([]);
+  await bot(`Last step: your medical records. Do you have any on hand, such as reports, imaging or lab results? Uploading them now helps your specialist get started sooner.`,600);
+  setChips([{t:'Yes, I can upload them',cls:'done',fn:()=>{user('Yes, I can upload them');uploadStep()}},{t:"No, I don't have them",cls:'ghost',fn:()=>{user("No, I don't have them");data.rec='None on hand';renderSummary();roiStep(false)}}]);
+}
+async function uploadStep(){
+  setChips([]);
+  await bot(`Add your files below. PDFs, images and common document files are fine.<div class="drop" id="drop"><input type="file" id="fup" multiple hidden><button class="btn alt" type="button" id="pick">Choose files</button><small>or drag and drop them here</small><div id="flist"></div></div>`,500);
+  const files=[],fup=$('fup'),fl=$('flist'),drop=$('drop');
+  const upd=()=>{
+    fl.innerHTML=files.map(f=>`<div class="fi"><span>&#128196; ${esc(f.name)}</span><em>${Math.max(1,Math.round(f.size/1024))} KB</em></div>`).join('');
+    const c=document.querySelector('.chip.done');if(c){c.disabled=!files.length;c.textContent=files.length?`Continue (${files.length} file${files.length>1?'s':''})`:'Add a file to continue'}
+    $('msgs').scrollTop=1e5;
+  };
+  $('pick').onclick=()=>fup.click();
+  fup.onchange=()=>{files.push(...fup.files);fup.value='';upd()};
+  drop.ondragover=e=>{e.preventDefault();drop.classList.add('over')};drop.ondragleave=()=>drop.classList.remove('over');
+  drop.ondrop=e=>{e.preventDefault();drop.classList.remove('over');files.push(...e.dataTransfer.files);upd()};
+  setChips([{t:'Add a file to continue',cls:'done',fn:()=>{if(!files.length)return;user(`Uploaded ${files.length} file${files.length>1?'s':''}`);data.rec=files.length+' file'+(files.length>1?'s':'')+' uploaded';renderSummary();roiStep(true)}},{t:"I'll upload later",cls:'ghost',fn:()=>{user("I'll upload later");data.rec='Will upload later';renderSummary();roiStep(false)}}]);
+  upd();
+}
+async function roiStep(up){
+  setChips([]);
+  const n=facilities.length;
+  const lead=up?`Thanks, we've got your files. To also collect records directly from ${n?'the facilities you listed':'your providers'}, we need your signed Release of Information.`:`No problem - we can collect them for you. All we need is your signed Release of Information (ROI), which lets us request records from ${n?'the facilities you listed':'your providers'}.`;
+  await bot(`${lead}<div class="roicard"><div><b>Release of Information</b><span>Purpose: Second opinion${n?` &middot; ${n} facilit${n>1?'ies':'y'}`:''} &middot; takes about 1 minute</span></div><button class="btn" type="button" data-roi="1">Review and sign</button><a href="#" class="roilink" data-roi="1">${ROI_URL}</a></div>`,700);
+  setChips([
+    {t:'Review and sign now',cls:'done',fn:openRoi},
+    {t:'Email me the link',fn:()=>{user('Email me the link');data.roi='Pending - link emailed';renderSummary();bot(`Sent to alex.stepantsev+m200@2nd.md. You can also find it any time in My Requests. Signing it is what starts record collection.`,500).then(review)}},
+    {t:"I'll sign later",cls:'ghost',fn:()=>{user("I'll sign later");data.roi='Pending';renderSummary();bot(`No problem. Your link is saved in My Requests, and your Intake Coordinator will remind you.`,500).then(review)}}
+  ]);
+}
+function openRoi(){
+  const f=facilities.filter(x=>x.name);
+  $('roifac').innerHTML=f.length?f.map(x=>`<div class="rf"><b>${esc(x.name)}</b><span>${[x.addr,x.dates,x.recs].filter(v=>v&&v!==NA).map(esc).join(' &middot; ')||'Details to be confirmed'}</span></div>`).join(''):'<div class="rf"><span>No facilities listed. Your Intake Coordinator will confirm providers with you.</span></div>';
+  $('roi').classList.remove('hide');chk();
+}
+function chk(){$('roisign').disabled=!($('roiagree').checked&&$('roidob').value&&$('roisig').value.trim().length>2)}
+['roiagree','roidob','roisig'].forEach(i=>{$(i).oninput=chk;$(i).onchange=chk});
+const closeRoi=()=>$('roi').classList.add('hide');
+$('roix').onclick=$('roicancel').onclick=closeRoi;
+$('roisign').onclick=()=>{
+  closeRoi();setChips([]);user('Signed the Release of Information');data.roi='Signed';renderSummary();
+  bot(`Thank you, ${first}. Your release is signed, and we'll start requesting records right away.`,500).then(review);
+};
+async function review(){
+  reviewing=true;asking=false;setChips([]);prog(6,'Check your answers');
+  $('cin').placeholder='';
+  const row=(l,v,k)=>`<div class="rv"><span>${l}</span><b>${esc(v)}</b>${k?`<a href="#" data-k="${k}">Edit</a>`:''}</div>`;
+  const rows=STEPS.map(s=>row(s.l,data[s.k]||NA,s.k)).join('')+facilities.map((f,i)=>row('Facility '+(i+1),[f.name,f.dates].filter(x=>x&&x!==NA).join(' | ')||NA)).join('')+row('Records on hand',data.rec||NA)+row('Release (ROI)',data.roi||'Not signed');
+  await bot(`<b>Quick review</b> - does this look right?<div class="rvbox">${rows}</div>`,700);
+  setChips([{t:'Looks good',cls:'done',fn:()=>{reviewing=false;user('Looks good');finish()}}]);
+}
+$('msgs').onclick=e=>{
+  const bi=e.target.closest('[data-bio]');if(bi){e.preventDefault();$('bio').classList.remove('hide');return}
+  const r=e.target.closest('[data-roi]');if(r){e.preventDefault();openRoi();return}
+  const a=e.target.closest('a[data-k]');if(!a)return;e.preventDefault();if(!reviewing)return;
+  reviewing=false;editing=true;present(STEPS.find(x=>x.k===a.dataset.k));
+};
+async function finish(){
+  $('cin').disabled=true;prog(6,'Complete');
+  await bot(`Thank you, ${first} - that's everything I need. I've added it to your request so you won't have to repeat it.`,600);
+  await bot(data.roi==='Signed'?`<b>What happens next:</b> your release is signed, so we start requesting your records today. We typically receive them in <b>5 to 10 business days</b> (some facilities take up to 3 weeks), and we'll keep you posted.`:`<b>What happens next:</b> once your Release of Information is signed, we typically retrieve records in <b>5 to 10 business days</b> (some facilities take up to 3 weeks). Signing it is the fastest way to start - your link stays in My Requests.`,900);
+  await bot(`Want to pre-book your expert medical opinion (EMO) appointment now? It's tentative - we'll confirm it once your records are in, and you can change it any time.`,800);
+  setChips([{t:'Pre-book my EMO appointment',fn:()=>{user('Pre-book my EMO appointment');offerSlots()}},{t:'Not now',cls:'ghost',fn:()=>{user('Not now');bot(`No problem. Your Care Team will reach out to schedule it once records arrive. You can also pre-book anytime from My Requests.`).then(()=>setChips([]))}}]);
+}
+async function offerSlots(){
+  await bot(`Here are the earliest tentative times, after the expected records timeline (all Central Time):`,600);
+  const base=new Date(2026,9,22),sl=[];
+  const times=[[10,0],[13,30],[17,30]];
+  for(let d=0,c=0;c<6;d++){const dt=new Date(base);dt.setDate(base.getDate()+d);if(dt.getDay()%6===0)continue;const [h,m]=times[c%3];sl.push({dt,h,m});c++}
+  const fmt=o=>{const hh=o.h%12||12;return o.dt.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})+' - '+hh+':'+String(o.m).padStart(2,'0')+' '+(o.h>=12?'pm':'am')};
+  setChips(sl.map(o=>({t:fmt(o),fn:()=>{
+    const t=fmt(o);user(t);setChips([]);
+    bot(`Done - <b>${t} CT</b> is pre-booked as a tentative EMO appointment. We'll confirm it once your records are in.`,600).then(()=>calStep(o,t));
+  }})));
+}
+function icsFile(o){
+  const u=(d,h,m)=>{const x=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate(),h+5,m));return x.toISOString().replace(/[-:]/g,'').replace(/\.\d+/,'')};
+  const lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//2nd.MD//Prototype//EN','BEGIN:VEVENT','UID:emo-1225204@2nd.md','DTSTAMP:'+u(new Date(),0,0).replace(/Z$/,'Z'),'DTSTART:'+u(o.dt,o.h,o.m),'DTEND:'+u(o.dt,o.h+(o.m+45>=60?1:0),(o.m+45)%60),'SUMMARY:2nd.MD expert consult (tentative)','DESCRIPTION:Tentative EMO appointment for request #1225204. We will confirm once your records are in.','STATUS:TENTATIVE','END:VEVENT','END:VCALENDAR'];
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([lines.join('\r\n')],{type:'text/calendar'}));a.download='2ndmd-consult.ics';document.body.appendChild(a);a.click();a.remove();
+}
+function gcalUrl(o,t){
+  const f=(d,h,m)=>new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate(),h+5,m)).toISOString().replace(/[-:]/g,'').replace(/\.\d+/,'');
+  const e=o.m+45;
+  return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent('2nd.MD expert consult (tentative)')+'&dates='+f(o.dt,o.h,o.m)+'/'+f(o.dt,o.h+(e>=60?1:0),e%60)+'&details='+encodeURIComponent('Tentative EMO appointment for request #1225204. We will confirm once your records are in.');
+}
+async function calStep(o,t){
+  await bot(`Add <b>${t} CT</b> to your calendar so you don't miss it.`,500);
+  const go=()=>notifyStep(t);
+  setChips([
+    {t:'Add to Google Calendar',cls:'done',fn:()=>{user('Add to Google Calendar');window.open(gcalUrl(o,t),'_blank','noopener');bot(`Opened Google Calendar with the date and time filled in. Just press Save there.`,400).then(go)}},
+    {t:'Download calendar invite (.ics)',fn:()=>{user('Download calendar invite (.ics)');icsFile(o);bot(`Your invite has been downloaded. Open it to add the appointment to Apple, Outlook or any other calendar.`,400).then(go)}},
+    {t:'Skip for now',cls:'ghost',fn:()=>{user('Skip for now');go()}}
+  ]);
+}
+async function nurseStep(method){
+  const m=method.startsWith('Text')?'text messages':method.startsWith('Automated')?'automated calls':'My Requests';
+  await bot(`Your care team is in place. We've assigned a nurse to your case:<div class="nurse"><div class="av">SM</div><div><b>Sarah Mitchell, RN</b><span>Your nurse care navigator</span><a href="#" data-bio="1">Preview bio</a></div></div>`,800);
+  await bot(`<b>What happens next</b><ol class="nx"><li><i>1</i><span>${data.roi==='Signed'?'We start collecting your medical records now, beginning with the facilities you listed.':'We start collecting your medical records as soon as your release is signed, beginning with the facilities you listed.'}</span></li><li><i>2</i><span>Sarah will contact you if she needs any additional details.</span></li><li><i>3</i><span>She'll keep you updated on progress by ${m} and in My Requests.</span></li></ol>`,900);
+  await bot(`Your appointment stays tentative until your records are in. Take care, ${first}!`,600);
+}
+async function notifyStep(t){
+  setChips([]);
+  await bot(`How would you like to be reminded about your appointment and any updates?<small>We'll use the mobile number on your account.</small>`,600);
+  const pick=(label,msg)=>()=>{user(label);setChips([]);bot(msg,600).then(()=>nurseStep(label))};
+  setChips([
+    {t:'Text message (SMS)',cls:'done',fn:pick('Text message (SMS)',`Got it - we'll send text reminders for <b>${t} CT</b> and for key updates on your request. Message and data rates may apply. Reply STOP to opt out any time.`)},
+    {t:'Automated voice call',fn:pick('Automated voice call',`Got it - we'll place an automated call to remind you about <b>${t} CT</b> and share key updates. You can change this any time in Account settings.`)},
+    {t:'No reminders',cls:'ghost',fn:pick('No reminders',`No problem - we won't send reminders. You can turn them on any time in Account settings.`)}
+  ]);
+}
+$('prev').onclick=()=>{if(m>9||y>2026){m--;if(m<0){m=11;y--}renderCal()}};
+$('next').onclick=()=>{m++;if(m>11){m=0;y++}renderCal()};
+</script>
+</body>
+</html>
