@@ -305,6 +305,29 @@ footer a{color:#fff;margin-right:8px}
 .chips{align-items:flex-start;align-content:flex-start}
 .chip{height:42px;min-height:0;padding:0 18px;line-height:1;white-space:nowrap;flex:none;max-width:100%;overflow:hidden;text-overflow:ellipsis;display:inline-flex;align-items:center;justify-content:center}
 .chip.back{padding:0 8px}
+/* ---- v9: intake-call booking ---- */
+.m.b.wide{max-width:100%;width:100%}
+.pk{display:flex;flex-direction:column;gap:12px}
+.pkdays{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px}
+.pkd{flex:1 0 76px;border:1.5px solid #d6e2df;background:#fff;border-radius:10px;padding:8px 6px;font:inherit;cursor:pointer;text-align:center}
+.pkd b{display:block;font-size:13px;font-weight:600}.pkd span{font-size:11.5px;color:#6b716f}
+.pkd.on{border-color:var(--teal);background:#e6f2ef}.pkd.on b{color:var(--teal)}
+.pkh{font-size:13.5px;font-weight:600;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}.pkh span{font-weight:400;font-size:11.5px;color:#6b716f}
+.pkslots{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+.pks{border:1.5px solid var(--teal);color:var(--teal);background:#fff;border-radius:8px;height:40px;font:inherit;font-size:13.5px;font-weight:600;cursor:pointer}
+.pks:hover{background:#e6f2ef}.pks.on{background:var(--teal);color:#fff}
+.pkd:focus-visible,.pks:focus-visible{outline:3px solid #2b6fd6;outline-offset:2px}
+.locked .pkd,.locked .pks{pointer-events:none}.locked .pks:not(.on),.locked .pkd:not(.on){opacity:.45}
+.cc{display:flex;gap:12px;margin-top:10px;background:#fff;border:1px solid #d6ede8;border-radius:12px;padding:14px}
+.cci{width:40px;height:40px;border-radius:50%;background:var(--teal);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;flex:none}
+.cc b{display:block;font-size:14.5px}.cc span{display:block;font-size:13px;color:#444;margin-top:2px}.cc span+span{color:#6b716f;font-size:12.5px}
+.mrh{font-size:22px;font-weight:600;margin:6px 0 18px}
+.mr{border:1px solid #e4e7e6;border-radius:12px;background:#fff;padding:20px 22px}
+.mrtop{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}
+.mrid{display:block;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#8a8f8d;font-weight:600}.mrtop b{font-size:17px;font-weight:600}
+.mrbadge{background:#e6f2ef;color:var(--teal);font-size:12px;font-weight:600;border-radius:12px;padding:5px 12px;white-space:nowrap}
+.mrrow{display:grid;grid-template-columns:140px 1fr;gap:12px;padding:10px 0;border-top:1px solid #f0f2f1;font-size:13.5px}.mrrow span{color:#6b716f}.mrrow b{font-weight:500}.mrrow a{color:var(--teal);font-weight:600}
+@media (max-width:600px){.mrrow{grid-template-columns:1fr;gap:2px}.mrtop{flex-direction:column}}
 </style>
 </head>
 <body>
@@ -369,11 +392,11 @@ footer a{color:#fff;margin-right:8px}
           <div class="ch primary">
             <span class="tag">Recommended - fastest way forward</span>
             <h3>Finish your intake with our AI assistant</h3>
-            <p class="sub">A quick, fully digital chat. No phone call, no waiting.</p>
+            <p class="sub">A quick digital chat now, then a short call at a time you choose.</p>
             <ul class="ben">
               <li><div><b>Records start sooner</b><span>We begin requesting your records the moment you finish, not after a call.</span></div></li>
               <li><div><b>On your schedule</b><span>About 5 minutes, any time, from any device. Skip anything you're unsure about.</span></div></li>
-              <li><div><b>Book your appointment now</b><span>Pre-book your expert consult at the end of the chat.</span></div></li>
+              <li><div><b>Book your intake call in the chat</b><span>Pick a time for a short call with your Intake Coordinator at the end - no phone tag.</span></div></li>
             </ul>
             <button class="btn big" id="startai">Start with AI assistant</button>
           </div>
@@ -394,6 +417,16 @@ footer a{color:#fff;margin-right:8px}
             <div class="chips" id="chips"></div>
             <form id="cform"><input id="cin" placeholder="Type your answer..." autocomplete="off"><button class="btn send" type="submit">Send</button></form>
           </div>
+        </div>
+      </div>
+      <div id="myreqview" class="hide">
+        <h2 class="mrh">My Requests</h2>
+        <div class="mr"><div class="mrtop"><div><span class="mrid">Request #1225204</span><b id="mrtitle"></b></div><span class="mrbadge" id="mrstatus"></span></div>
+          <div class="mrrow"><span>Intake call</span><b id="mrcall"></b></div>
+          <div class="mrrow"><span>Intake answers</span><b>Received - shared with your Intake Coordinator</b></div>
+          <div class="mrrow"><span>Facilities</span><b id="mrfac"></b></div>
+          <div class="mrrow"><span>Records on hand</span><b id="mrrec"></b></div>
+          <div class="mrrow"><span>Release (ROI)</span><b id="mrroi"></b></div>
         </div>
       </div>
       <div id="schedview" class="narrow-v hide">
@@ -470,7 +503,7 @@ $('submit').onclick=()=>{
   $('s1').classList.add('hide');$('s3').classList.remove('hide');window.scrollTo({top:0});
 };
 let chatStarted=false;
-function show(id){['choiceview','chatview','schedview'].forEach(v=>$(v).classList.toggle('hide',v!==id));window.scrollTo({top:0})}
+function show(id){['choiceview','chatview','schedview','myreqview'].forEach(v=>$(v).classList.toggle('hide',v!==id));window.scrollTo({top:0})}
 $('startai').onclick=()=>{show('chatview');if(!chatStarted){chatStarted=true;startChat()}};
 $('cb').onclick=$('human').onclick=()=>{show('schedview');renderCal()};
 $('backchat').onclick=()=>show(chatStarted?'chatview':'choiceview');
@@ -567,14 +600,14 @@ async function startChat(){
   next();
 }
 function user(t){add('u',esc(t));setChips([])}
-const dr=y=>{const d=new Date(2026,9,8),f=new Date(2026-y,9,8),p=x=>String(x.getMonth()+1).padStart(2,'0')+'/'+String(x.getDate()).padStart(2,'0')+'/'+x.getFullYear();return p(f)+' - '+p(d)};
+const dr=mo=>{const d=new Date(2026,9,8),f=new Date(2026,9-mo,8),p=x=>String(x.getMonth()+1).padStart(2,'0')+'/'+String(x.getDate()).padStart(2,'0')+'/'+x.getFullYear();return p(f)+' - '+p(d)};
 const FSTEPS=[
  {k:'name',l:'Name',q:()=>`What's the name of the doctor, clinic or hospital? Type it in.`,chips:()=>[]},
  {k:'addr',l:'Address',q:()=>`What's its address, or at least the city and state?`,chips:()=>[{t:"I'm not sure",na:1}]},
  {k:'proc',l:'Procedures and labs',q:()=>`What procedures, tests or labs were done there? One per line is ideal - in chat, separate them with commas.`,multi:1,chips:()=>['Office visit','MRI / CT / X-ray','Blood work','Surgery','Physical therapy'].map(t=>({t})).concat([{t:"I'm not sure",na:1}])},
  {k:'phone',l:'Phone',q:()=>`Do you have the facility's phone number? It speeds up record requests.`,chips:()=>[{t:"I don't have it",na:1}]},
  {k:'fax',l:'Fax',q:()=>`And their fax number, if you have it?`,chips:()=>[{t:"I don't have it",na:1}]},
- {k:'dates',l:'Service dates',q:()=>`When were you seen there? Pick a range or type dates (mm/dd/yyyy to mm/dd/yyyy).`,chips:()=>[{t:'Past 12 months',v:dr(1)},{t:'Past 2 years',v:dr(2)},{t:'Past 5 years',v:dr(5)},{t:"I'm not sure",na:1}]},
+ {k:'dates',l:'Service dates',q:()=>`When were you seen there? Pick a range or type dates (mm/dd/yyyy to mm/dd/yyyy).`,chips:()=>[{t:'Past month',v:dr(1)},{t:'Past 3 months',v:dr(3)},{t:'Past 6 months',v:dr(6)},{t:'Past 12 months',v:dr(12)},{t:"I'm not sure",na:1}]},
  {k:'recs',l:'Record types',q:()=>`Which records should we request from them? Pick all that apply.`,multi:1,chips:()=>['Office visit notes','Imaging reports','Lab results','Operative reports','Discharge summary','Billing records'].map(t=>({t})).concat([{t:'Everything available',na:0,all:1}])}
 ];
 let mode='main',fi=-1,cur=null,curStep=null,facilities=[],editing=false,reviewing=false;
@@ -582,8 +615,8 @@ const PH={subject:'Type a short title...',intro:'Type your introduction...',goal
 const SECS=['Consult goal','Diagnosis','History','Current treatment plan','Facilities visited','Medical records'];
 $('segs').innerHTML=SECS.map(n=>`<div class="ps"><i></i><span>${n}</span></div>`).join('');
 const secIdx=s=>SECS.indexOf(s.g);
-function prog(idx,txt){
-  $('progsec').textContent=SECS[Math.min(idx,5)];$('progn').textContent=txt;
+function prog(idx,txt,sec){
+  $('progsec').textContent=sec||SECS[Math.min(idx,5)];$('progn').textContent=txt;
   [...$('segs').children].forEach((e,i)=>e.className='ps'+(i<idx?' done':i===idx?' on':''));
 }
 const isMain=s=>STEPS.includes(s);
@@ -693,11 +726,12 @@ function chk(){$('roisign').disabled=!($('roiagree').checked&&$('roidob').value&
 const closeRoi=()=>$('roi').classList.add('hide');
 $('roix').onclick=$('roicancel').onclick=closeRoi;
 $('roisign').onclick=()=>{
+  if(!$('myreqview').classList.contains('hide')){closeRoi();data.roi='Signed';openMyRequests();return}
   closeRoi();setChips([]);user('Signed the Release of Information');data.roi='Signed';renderSummary();
   bot(`Thank you, ${first}. Your release is signed, and we'll start requesting records right away.`,500).then(review);
 };
 async function review(){
-  reviewing=true;asking=false;setChips([]);prog(6,'Check your answers');
+  reviewing=true;asking=false;setChips([]);prog(6,'Check your answers','Review');
   $('cin').placeholder='';
   const row=(l,v,k)=>`<div class="rv"><span>${l}</span><b>${esc(v)}</b>${k?`<a href="#" data-k="${k}">Edit</a>`:''}</div>`;
   const rows=STEPS.map(s=>row(s.l,data[s.k]||NA,s.k)).join('')+facilities.map((f,i)=>row('Facility '+(i+1),[f.name,f.dates].filter(x=>x&&x!==NA).join(' | ')||NA)).join('')+row('Records on hand',data.rec||NA)+row('Release (ROI)',data.roi||'Not signed');
@@ -705,63 +739,83 @@ async function review(){
   setChips([{t:'Looks good',cls:'done',fn:()=>{reviewing=false;user('Looks good');finish()}}]);
 }
 $('msgs').onclick=e=>{
+  const sb=e.target.closest('[data-slot]');if(sb){e.preventDefault();pickSlot(sb);return}
+  const dy=e.target.closest('[data-day]');if(dy){e.preventDefault();pickDay(+dy.dataset.day);return}
   const bi=e.target.closest('[data-bio]');if(bi){e.preventDefault();$('bio').classList.remove('hide');return}
   const r=e.target.closest('[data-roi]');if(r){e.preventDefault();openRoi();return}
   const a=e.target.closest('a[data-k]');if(!a)return;e.preventDefault();if(!reviewing)return;
   reviewing=false;editing=true;present(STEPS.find(x=>x.k===a.dataset.k));
 };
 async function finish(){
-  $('cin').disabled=true;prog(6,'Complete');
+  $('cin').disabled=true;$('cin').placeholder='';prog(6,'Last step','Intake call');
   await bot(`Thank you, ${first} - that's everything I need. I've added it to your request so you won't have to repeat it.`,600);
   await bot(data.roi==='Signed'?`<b>What happens next:</b> your release is signed, so we start requesting your records today. We typically receive them in <b>5 to 10 business days</b> (some facilities take up to 3 weeks), and we'll keep you posted.`:`<b>What happens next:</b> once your Release of Information is signed, we typically retrieve records in <b>5 to 10 business days</b> (some facilities take up to 3 weeks). Signing it is the fastest way to start - your link stays in My Requests.`,900);
-  await bot(`Want to pre-book your expert medical opinion (EMO) appointment now? It's tentative - we'll confirm it once your records are in, and you can change it any time.`,800);
-  setChips([{t:'Pre-book my EMO appointment',fn:()=>{user('Pre-book my EMO appointment');offerSlots()}},{t:'Not now',cls:'ghost',fn:()=>{user('Not now');bot(`No problem. Your Care Team will reach out to schedule it once records arrive. You can also pre-book anytime from My Requests.`).then(()=>setChips([]))}}]);
+  await bot(`<b>Last step:</b> a short call with your ${COORD}. They'll go over your answers, confirm the records we're requesting, and answer any questions.<small>About ${CALL_MIN} minutes &middot; we'll call the phone number on your account</small>`,800);
+  offerSlots();
+}
+/* intake call slots: Mon-Fri, 7am-7pm CT, starting from prototype "today" (Oct 8, 2026, 4:40pm CT) */
+const REQ='1225204',COORD='Intake Coordinator',CALL_MIN=15;
+const NOW=new Date(2026,9,8,16,40);
+const SLOT_TIMES=[[8,0],[9,30],[11,0],[12,30],[14,0],[15,30],[17,0],[18,15]];
+let callDays=[],dayIdx=0,picked=null,slotMsg=null;
+function buildDays(){
+  const out=[];
+  for(let d=0;out.length<5;d++){
+    const dt=new Date(NOW.getFullYear(),NOW.getMonth(),NOW.getDate()+d);
+    if(dt.getDay()%6===0)continue;
+    const slots=SLOT_TIMES.map(([h,m])=>new Date(dt.getFullYear(),dt.getMonth(),dt.getDate(),h,m)).filter(x=>x-NOW>30*60000).filter((x,i)=>(x.getDate()+i)%3!==0);
+    if(slots.length)out.push({dt,slots});
+  }
+  return out;
+}
+const fmtT=x=>{const h=x.getHours(),m=x.getMinutes();return (h%12||12)+':'+String(m).padStart(2,'0')+' '+(h>=12?'pm':'am')};
+const fmtD=(x,o)=>x.toLocaleDateString('en-US',o||{weekday:'short',month:'short',day:'numeric'});
+const dayLbl=dt=>{const t=new Date(NOW.getFullYear(),NOW.getMonth(),NOW.getDate()),diff=Math.round((new Date(dt.getFullYear(),dt.getMonth(),dt.getDate())-t)/864e5);return diff===0?'Today':diff===1?'Tomorrow':fmtD(dt,{weekday:'short'})};
+function slotHtml(){
+  const d=callDays[dayIdx];
+  return `<div class="pk"><div class="pkdays">${callDays.map((x,i)=>`<button type="button" class="pkd${i===dayIdx?' on':''}" data-day="${i}"><b>${dayLbl(x.dt)}</b><span>${fmtD(x.dt,{month:'short',day:'numeric'})}</span></button>`).join('')}</div>
+  <div class="pkh">${fmtD(d.dt,{weekday:'long',month:'long',day:'numeric'})}<span>Central Time (CT)</span></div>
+  <div class="pkslots">${d.slots.map(s=>`<button type="button" class="pks${picked&&+picked===+s?' on':''}" data-slot="${+s}">${fmtT(s)}</button>`).join('')}</div></div>`;
 }
 async function offerSlots(){
-  await bot(`Here are the earliest tentative times, after the expected records timeline (all Central Time):`,600);
-  const base=new Date(2026,9,22),sl=[];
-  const times=[[10,0],[13,30],[17,30]];
-  for(let d=0,c=0;c<6;d++){const dt=new Date(base);dt.setDate(base.getDate()+d);if(dt.getDay()%6===0)continue;const [h,m]=times[c%3];sl.push({dt,h,m});c++}
-  const fmt=o=>{const hh=o.h%12||12;return o.dt.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})+' - '+hh+':'+String(o.m).padStart(2,'0')+' '+(o.h>=12?'pm':'am')};
-  setChips(sl.map(o=>({t:fmt(o),fn:()=>{
-    const t=fmt(o);user(t);setChips([]);
-    bot(`Done - <b>${t} CT</b> is pre-booked as a tentative EMO appointment. We'll confirm it once your records are in.`,600).then(()=>calStep(o,t));
-  }})));
+  picked=null;callDays=buildDays();dayIdx=0;
+  await bot(`Here are the available times. Pick the one that works best for you:`,600);
+  slotMsg=add('b wide',slotHtml());
+  setConfirmChips();
 }
-function icsFile(o){
-  const u=(d,h,m)=>{const x=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate(),h+5,m));return x.toISOString().replace(/[-:]/g,'').replace(/\.\d+/,'')};
-  const lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//2nd.MD//Prototype//EN','BEGIN:VEVENT','UID:emo-1225204@2nd.md','DTSTAMP:'+u(new Date(),0,0).replace(/Z$/,'Z'),'DTSTART:'+u(o.dt,o.h,o.m),'DTEND:'+u(o.dt,o.h+(o.m+45>=60?1:0),(o.m+45)%60),'SUMMARY:2nd.MD expert consult (tentative)','DESCRIPTION:Tentative EMO appointment for request #1225204. We will confirm once your records are in.','STATUS:TENTATIVE','END:VEVENT','END:VCALENDAR'];
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([lines.join('\r\n')],{type:'text/calendar'}));a.download='2ndmd-consult.ics';document.body.appendChild(a);a.click();a.remove();
-}
-function gcalUrl(o,t){
-  const f=(d,h,m)=>new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate(),h+5,m)).toISOString().replace(/[-:]/g,'').replace(/\.\d+/,'');
-  const e=o.m+45;
-  return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent('2nd.MD expert consult (tentative)')+'&dates='+f(o.dt,o.h,o.m)+'/'+f(o.dt,o.h+(e>=60?1:0),e%60)+'&details='+encodeURIComponent('Tentative EMO appointment for request #1225204. We will confirm once your records are in.');
-}
-async function calStep(o,t){
-  await bot(`Add <b>${t} CT</b> to your calendar so you don't miss it.`,500);
-  const go=()=>notifyStep(t);
+function pickDay(i){if(!slotMsg||slotMsg.dataset.locked)return;dayIdx=i;slotMsg.innerHTML=slotHtml()}
+function pickSlot(b){if(!slotMsg||slotMsg.dataset.locked)return;picked=new Date(+b.dataset.slot);slotMsg.innerHTML=slotHtml();setConfirmChips()}
+function setConfirmChips(){
   setChips([
-    {t:'Add to Google Calendar',cls:'done',fn:()=>{user('Add to Google Calendar');window.open(gcalUrl(o,t),'_blank','noopener');bot(`Opened Google Calendar with the date and time filled in. Just press Save there.`,400).then(go)}},
-    {t:'Download calendar invite (.ics)',fn:()=>{user('Download calendar invite (.ics)');icsFile(o);bot(`Your invite has been downloaded. Open it to add the appointment to Apple, Outlook or any other calendar.`,400).then(go)}},
-    {t:'Skip for now',cls:'ghost',fn:()=>{user('Skip for now');go()}}
+    {t:picked?`Confirm ${dayLbl(picked)}, ${fmtT(picked)} CT`:'Select a time to continue',cls:'done',fn:()=>{if(picked)confirmSlot()}},
+    {t:'None of these work',cls:'ghost',fn:()=>{user('None of these work');setChips([]);bot(`No problem - your ${COORD} will call you Mon-Fri, 7am-7pm CT, to find a time. You can also call us at (866) 841-2575.`,500).then(doneChips)}}
   ]);
+  const c=document.querySelector('.chip.done');if(c)c.disabled=!picked;
+  $('msgs').scrollTop=1e5;
 }
-async function nurseStep(method){
-  const m=method.startsWith('Text')?'text messages':method.startsWith('Automated')?'automated calls':'My Requests';
-  await bot(`Your care team is in place. We've assigned a nurse to your case:<div class="nurse"><div class="av">SM</div><div><b>Sarah Mitchell, RN</b><span>Your nurse care navigator</span><a href="#" data-bio="1">Preview bio</a></div></div>`,800);
-  await bot(`<b>What happens next</b><ol class="nx"><li><i>1</i><span>${data.roi==='Signed'?'We start collecting your medical records now, beginning with the facilities you listed.':'We start collecting your medical records as soon as your release is signed, beginning with the facilities you listed.'}</span></li><li><i>2</i><span>Sarah will contact you if she needs any additional details.</span></li><li><i>3</i><span>She'll keep you updated on progress by ${m} and in My Requests.</span></li></ol>`,900);
-  await bot(`Your appointment stays tentative until your records are in. Take care, ${first}!`,600);
+async function confirmSlot(){
+  slotMsg.dataset.locked='1';slotMsg.classList.add('locked');
+  const when=`${fmtD(picked,{weekday:'long',month:'long',day:'numeric'})} at ${fmtT(picked)} CT`;
+  user(`Confirm ${dayLbl(picked)}, ${fmtT(picked)} CT`);setChips([]);
+  data.call=when;prog(6,'Complete','All done');
+  await bot(`You're all set, ${first}.<div class="cc"><div class="cci">&#9742;</div><div><b>Intake call confirmed</b><span>${esc(when)}</span><span>About ${CALL_MIN} minutes &middot; your ${COORD} will call the phone number on your account</span></div></div><small>We've also emailed the confirmation to alex.stepantsev+m200@2nd.md. To reschedule, open the request in My Requests.</small>`,700);
+  doneChips();
 }
-async function notifyStep(t){
-  setChips([]);
-  await bot(`How would you like to be reminded about your appointment and any updates?<small>We'll use the mobile number on your account.</small>`,600);
-  const pick=(label,msg)=>()=>{user(label);setChips([]);bot(msg,600).then(()=>nurseStep(label))};
-  setChips([
-    {t:'Text message (SMS)',cls:'done',fn:pick('Text message (SMS)',`Got it - we'll send text reminders for <b>${t} CT</b> and for key updates on your request. Message and data rates may apply. Reply STOP to opt out any time.`)},
-    {t:'Automated voice call',fn:pick('Automated voice call',`Got it - we'll place an automated call to remind you about <b>${t} CT</b> and share key updates. You can change this any time in Account settings.`)},
-    {t:'No reminders',cls:'ghost',fn:pick('No reminders',`No problem - we won't send reminders. You can turn them on any time in Account settings.`)}
-  ]);
+function doneChips(){
+  $('cin').disabled=true;
+  setChips([{t:'Go to My Requests',cls:'done',fn:openMyRequests}]);
+}
+function openMyRequests(){
+  document.querySelectorAll('.nav a').forEach(a=>a.classList.toggle('active',a.textContent==='My Requests'));
+  $('mrtitle').textContent=data.subject&&data.subject!==NA?data.subject:'Consult request';
+  $('mrstatus').textContent=data.call?'Intake call scheduled':'Waiting for intake call';
+  $('mrcall').textContent=data.call||'Your Intake Coordinator will call you to schedule';
+  const n=facilities.filter(f=>f.name).length;
+  $('mrfac').textContent=n?`${n} facilit${n>1?'ies':'y'} listed`:'None listed';
+  $('mrrec').textContent=data.rec||'None on hand';
+  $('mrroi').innerHTML=data.roi==='Signed'?'Signed - record retrieval started':`${esc(data.roi||'Not signed')} &middot; <a href="#" id="mrsign">Review and sign</a>`;
+  const s=$('mrsign');if(s)s.onclick=e=>{e.preventDefault();openRoi()};
+  show('myreqview');
 }
 $('prev').onclick=()=>{if(m>9||y>2026){m--;if(m<0){m=11;y--}renderCal()}};
 $('next').onclick=()=>{m++;if(m>11){m=0;y++}renderCal()};
